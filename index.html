@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Dashboard de Conferência de Devolução - Sistema seguro de gerenciamento">
+  <meta name="theme-color" content="#3b82f6">
+  <title>Dashboard | Conferência de Devolução</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- LOGIN PAGE -->
+  <section id="login-page" class="login-page" role="main" aria-label="Página de login">
+    <div class="login-container">
+      <div class="login-box">
+        <div class="login-header">
+          <div class="login-icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+              <polyline points="10 17 15 12 10 7"></polyline>
+              <line x1="15" y1="12" x2="3" y2="12"></line>
+            </svg>
+          </div>
+          <h1>Conferência de Devolução</h1>
+          <p>Acesso ao sistema</p>
+        </div>
+        
+        <form class="login-form" onsubmit="handleLogin(event)" novalidate>
+          <div class="input-group">
+            <label for="user">Usuário</label>
+            <input 
+              id="user" 
+              type="text" 
+              placeholder="Digite seu usuário"
+              required
+              aria-required="true"
+              aria-describedby="user-error"
+            >
+            <span id="user-error" class="input-error" role="alert"></span>
+          </div>
+          
+          <div class="input-group">
+            <label for="pass">Senha</label>
+            <input 
+              id="pass" 
+              type="password" 
+              placeholder="Digite sua senha"
+              required
+              aria-required="true"
+              aria-describedby="pass-error"
+            >
+            <span id="pass-error" class="input-error" role="alert"></span>
+          </div>
+          
+          <button type="submit" class="btn primary" id="login-btn">
+            <span class="btn-text">Entrar</span>
+            <span class="btn-loader hidden" aria-hidden="true">⟳</span>
+          </button>
+          <span id="loginErro" class="login-error" role="alert" aria-live="polite"></span>
+        </form>
+        
+        <p class="login-footer">Sistema seguro de gerenciamento de devoluções</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="dashboard" class="dashboard hidden" role="main" aria-label="Dashboard principal">
+    <header class="dashboard-header">
+      <div class="header-content">
+        <div>
+          <h1>Dashboard de Coletas</h1>
+          <span>Controle interno de devoluções</span>
+        </div>
+        <div class="header-actions">
+          <button class="btn outline" onclick="exportarPDF()" title="Exportar relatório em PDF">
+            📄 <span class="btn-label">PDF</span>
+          </button>
+          <button class="btn outline" onclick="recarregar()" title="Recarregar dados">
+            🔄 <span class="btn-label">Recarregar</span>
+          </button>
+          <button class="btn danger" onclick="confirmarLogout()" title="Sair do sistema">
+            Sair
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="dashboard-main">
+      <!-- LOADING SPINNER -->
+      <div id="loading-spinner" class="loading-spinner hidden" aria-hidden="true">
+        <div class="spinner"></div>
+        <p>Carregando dados...</p>
+      </div>
+
+      <!-- FILTROS -->
+      <section class="filters-section" aria-label="Filtros de busca">
+        <div class="filter-item">
+          <label for="filtroAno">Ano</label>
+          <select id="filtroAno" aria-label="Filtrar por ano">
+            <option value="">Todos</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label for="filtroSituacao">Situação</label>
+          <select id="filtroSituacao" aria-label="Filtrar por situação">
+            <option value="">Todas</option>
+            <option>AGUARDANDO COLETA</option>
+            <option>COLETADO</option>
+            <option>NAO COLETADO</option>
+            <option>AVARIADO PELA ENCHENTE</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label for="searchInput">Buscar</label>
+          <input 
+            id="searchInput" 
+            type="text" 
+            placeholder="Buscar por NF, Emitente ou Cidade..."
+            aria-label="Buscar na tabela"
+          >
+        </div>
+        <div class="filter-item">
+          <label>&nbsp;</label>
+          <button class="btn primary" onclick="carregar()" title="Aplicar filtros">Filtrar</button>
+        </div>
+      </section>
+
+      <!-- CARDS DE RESUMO -->
+      <section class="cards-section" aria-label="Resumo de coletas">
+        <div class="card card-warning">
+          <div class="card-icon" aria-hidden="true">⏳</div>
+          <div class="card-content">
+            <span>Aguardando</span>
+            <h2 id="totalAguardando" aria-label="Total aguardando coleta">0</h2>
+          </div>
+        </div>
+        <div class="card card-success">
+          <div class="card-icon" aria-hidden="true">✓</div>
+          <div class="card-content">
+            <span>Coletados</span>
+            <h2 id="totalColetado" aria-label="Total coletado">0</h2>
+          </div>
+        </div>
+      </section>
+
+      <!-- TABELA -->
+      <section class="table-wrapper" aria-label="Tabela de coletas">
+        <div class="table-info">
+          <p id="table-info-text">Carregando dados...</p>
+        </div>
+        <table role="table" aria-label="Dados de coletas">
+          <thead>
+            <tr>
+              <th role="columnheader" aria-sort="none">
+                <button class="sort-btn" onclick="ordenarTabela('notaFiscal')" title="Ordenar por NF">
+                  NF <span class="sort-icon">⇅</span>
+                </button>
+              </th>
+              <th role="columnheader" aria-sort="none">
+                <button class="sort-btn" onclick="ordenarTabela('emitente')" title="Ordenar por Emitente">
+                  Emitente <span class="sort-icon">⇅</span>
+                </button>
+              </th>
+              <th role="columnheader" aria-sort="none">
+                <button class="sort-btn" onclick="ordenarTabela('cidade')" title="Ordenar por Cidade">
+                  Cidade <span class="sort-icon">⇅</span>
+                </button>
+              </th>
+              <th role="columnheader" aria-sort="none">
+                <button class="sort-btn" onclick="ordenarTabela('data')" title="Ordenar por Data">
+                  Data <span class="sort-icon">⇅</span>
+                </button>
+              </th>
+              <th role="columnheader">Dias</th>
+              <th role="columnheader">Representante</th>
+              <th role="columnheader" aria-sort="none">
+                <button class="sort-btn" onclick="ordenarTabela('situacao')" title="Ordenar por Situação">
+                  Situação <span class="sort-icon">⇅</span>
+                </button>
+              </th>
+              <th role="columnheader">Obs</th>
+            </tr>
+          </thead>
+          <tbody id="tbody" role="rowgroup"></tbody>
+        </table>
+      </section>
+
+      <!-- PAGINAÇÃO -->
+      <section class="pagination" id="pagination-section" aria-label="Paginação">
+        <button id="prev-btn" class="btn outline" onclick="paginaAnterior()" title="Página anterior">← Anterior</button>
+        <span id="page-info" aria-live="polite">Página 1</span>
+        <button id="next-btn" class="btn outline" onclick="proximaPagina()" title="Próxima página">Próxima →</button>
+      </section>
+    </main>
+  </section>
+
+  <!-- MODAL DE CONFIRMAÇÃO -->
+  <div id="modal-confirmacao" class="modal hidden" role="dialog" aria-labelledby="modal-title" aria-modal="true">
+    <div class="modal-content">
+      <h2 id="modal-title">Confirmação</h2>
+      <p id="modal-message"></p>
+      <div class="modal-actions">
+        <button class="btn outline" onclick="fecharModal()">Cancelar</button>
+        <button class="btn danger" id="modal-confirm-btn" onclick="confirmarAcao()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
