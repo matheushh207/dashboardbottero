@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Dashboard de Conferência de Devolução - Sistema seguro de gerenciamento">
-  <meta name="theme-color" content="#3b82f6">
-  <title>Dashboard | Conferência de Devolução</title>
+  <meta name="description" content="Dashboard Premium de Conferência de Devolução">
+  <meta name="theme-color" content="#10b981">
+  <title>Dashboard Premium | Conferência de Devolução</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -22,7 +22,7 @@
             </svg>
           </div>
           <h1>Conferência de Devolução</h1>
-          <p>Acesso ao sistema</p>
+          <p>Sistema Premium de Gerenciamento</p>
         </div>
         
         <form class="login-form" onsubmit="handleLogin(event)" novalidate>
@@ -34,7 +34,6 @@
               placeholder="Digite seu usuário"
               required
               aria-required="true"
-              aria-describedby="user-error"
             >
             <span id="user-error" class="input-error" role="alert"></span>
           </div>
@@ -47,12 +46,11 @@
               placeholder="Digite sua senha"
               required
               aria-required="true"
-              aria-describedby="pass-error"
             >
             <span id="pass-error" class="input-error" role="alert"></span>
           </div>
           
-          <button type="submit" class="btn primary" id="login-btn">
+          <button type="submit" class="btn btn-primary" id="login-btn">
             <span class="btn-text">Entrar</span>
             <span class="btn-loader hidden" aria-hidden="true">⟳</span>
           </button>
@@ -66,20 +64,22 @@
 
   <!-- DASHBOARD -->
   <section id="dashboard" class="dashboard hidden" role="main" aria-label="Dashboard principal">
+    <div class="dashboard-bg"></div>
+    
     <header class="dashboard-header">
       <div class="header-content">
         <div>
-          <h1>Dashboard de Coletas</h1>
-          <span>Controle interno de devoluções</span>
+          <h1>Dashboard Premium</h1>
+          <span>Controle de Devoluções - 2026</span>
         </div>
         <div class="header-actions">
-          <button class="btn outline" onclick="exportarPDF()" title="Exportar relatório em PDF">
+          <button class="btn btn-secondary" onclick="exportarPDF()" title="Exportar relatório em PDF">
             📄 <span class="btn-label">PDF</span>
           </button>
-          <button class="btn outline" onclick="recarregar()" title="Recarregar dados">
+          <button class="btn btn-secondary" onclick="recarregar()" title="Recarregar dados">
             🔄 <span class="btn-label">Recarregar</span>
           </button>
-          <button class="btn danger" onclick="confirmarLogout()" title="Sair do sistema">
+          <button class="btn btn-danger" onclick="confirmarLogout()" title="Sair do sistema">
             Sair
           </button>
         </div>
@@ -94,7 +94,7 @@
       </div>
 
       <!-- FILTROS -->
-      <section class="filters-section" aria-label="Filtros de busca">
+      <section class="filters-section glass" aria-label="Filtros de busca">
         <div class="filter-item">
           <label for="filtroAno">Ano</label>
           <select id="filtroAno" aria-label="Filtrar por ano">
@@ -122,20 +122,20 @@
         </div>
         <div class="filter-item">
           <label>&nbsp;</label>
-          <button class="btn primary" onclick="carregar()" title="Aplicar filtros">Filtrar</button>
+          <button class="btn btn-primary" onclick="carregar()" title="Aplicar filtros">Filtrar</button>
         </div>
       </section>
 
       <!-- CARDS DE RESUMO -->
       <section class="cards-section" aria-label="Resumo de coletas">
-        <div class="card card-warning">
+        <div class="card glass card-warning">
           <div class="card-icon" aria-hidden="true">⏳</div>
           <div class="card-content">
             <span>Aguardando</span>
             <h2 id="totalAguardando" aria-label="Total aguardando coleta">0</h2>
           </div>
         </div>
-        <div class="card card-success">
+        <div class="card glass card-success">
           <div class="card-icon" aria-hidden="true">✓</div>
           <div class="card-content">
             <span>Coletados</span>
@@ -145,36 +145,36 @@
       </section>
 
       <!-- TABELA -->
-      <section class="table-wrapper" aria-label="Tabela de coletas">
+      <section class="table-wrapper glass" aria-label="Tabela de coletas">
         <div class="table-info">
           <p id="table-info-text">Carregando dados...</p>
         </div>
         <table role="table" aria-label="Dados de coletas">
           <thead>
             <tr>
-              <th role="columnheader" aria-sort="none">
+              <th role="columnheader">
                 <button class="sort-btn" onclick="ordenarTabela('notaFiscal')" title="Ordenar por NF">
                   NF <span class="sort-icon">⇅</span>
                 </button>
               </th>
-              <th role="columnheader" aria-sort="none">
+              <th role="columnheader">
                 <button class="sort-btn" onclick="ordenarTabela('emitente')" title="Ordenar por Emitente">
                   Emitente <span class="sort-icon">⇅</span>
                 </button>
               </th>
-              <th role="columnheader" aria-sort="none">
+              <th role="columnheader">
                 <button class="sort-btn" onclick="ordenarTabela('cidade')" title="Ordenar por Cidade">
                   Cidade <span class="sort-icon">⇅</span>
                 </button>
               </th>
-              <th role="columnheader" aria-sort="none">
+              <th role="columnheader">
                 <button class="sort-btn" onclick="ordenarTabela('data')" title="Ordenar por Data">
                   Data <span class="sort-icon">⇅</span>
                 </button>
               </th>
               <th role="columnheader">Dias</th>
               <th role="columnheader">Representante</th>
-              <th role="columnheader" aria-sort="none">
+              <th role="columnheader">
                 <button class="sort-btn" onclick="ordenarTabela('situacao')" title="Ordenar por Situação">
                   Situação <span class="sort-icon">⇅</span>
                 </button>
@@ -187,22 +187,22 @@
       </section>
 
       <!-- PAGINAÇÃO -->
-      <section class="pagination" id="pagination-section" aria-label="Paginação">
-        <button id="prev-btn" class="btn outline" onclick="paginaAnterior()" title="Página anterior">← Anterior</button>
+      <section class="pagination glass" id="pagination-section" aria-label="Paginação">
+        <button id="prev-btn" class="btn btn-secondary" onclick="paginaAnterior()" title="Página anterior">← Anterior</button>
         <span id="page-info" aria-live="polite">Página 1</span>
-        <button id="next-btn" class="btn outline" onclick="proximaPagina()" title="Próxima página">Próxima →</button>
+        <button id="next-btn" class="btn btn-secondary" onclick="proximaPagina()" title="Próxima página">Próxima →</button>
       </section>
     </main>
   </section>
 
   <!-- MODAL DE CONFIRMAÇÃO -->
   <div id="modal-confirmacao" class="modal hidden" role="dialog" aria-labelledby="modal-title" aria-modal="true">
-    <div class="modal-content">
+    <div class="modal-content glass">
       <h2 id="modal-title">Confirmação</h2>
       <p id="modal-message"></p>
       <div class="modal-actions">
-        <button class="btn outline" onclick="fecharModal()">Cancelar</button>
-        <button class="btn danger" id="modal-confirm-btn" onclick="confirmarAcao()">Confirmar</button>
+        <button class="btn btn-secondary" onclick="fecharModal()">Cancelar</button>
+        <button class="btn btn-danger" id="modal-confirm-btn" onclick="confirmarAcao()">Confirmar</button>
       </div>
     </div>
   </div>
